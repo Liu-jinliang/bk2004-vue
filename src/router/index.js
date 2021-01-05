@@ -15,6 +15,7 @@ import filmsRouter from "./routes/films";
 import cinemasRouter from "./routes/cinemas";
 import centerRouter from "./routes/center";
 
+
 const routes = [
   {path:"/",redirect: "/films/NowPlaying"},
   ...filmsRouter,
