@@ -1,14 +1,17 @@
 <template>
   <div>
-    <div><img v-lazy="film.poster" width="100%" /></div>
-    <div>{{ film.name }}</div>
+    <div><img :src="film.poster" width="100%" /></div>
+    <div>
+      <h3>{{ film.name }}</h3>
+    </div>
     <div>
       {{ film.category }}
     </div>
     {{ film.premiereAt | timestamp }}上映
     <div>{{ film.nation }} | {{ film.runtime }}分钟</div>
     <div>{{ film.synopsis }}</div>
-    <div><h3>演职人员</h3></div>
+
+    <div><h4>演职人员</h4></div>
     <yanyuan :key="film.actors.length">
       <div
         class="swiper-slide"
@@ -52,10 +55,8 @@ export default {
   },
   filters: {
     timestamp(timestamp) {
-      const year = moment(timestamp * 1000).format("YYYY");
-      const month = moment(timestamp * 1000).format("MM");
-      const day = moment(timestamp * 1000).format("D");
-      return `${year}-${month}-${day}`;
+      const time = moment(timestamp * 1000).format("YYYY-MM-DD");
+      return time;
     },
   },
   components: {
