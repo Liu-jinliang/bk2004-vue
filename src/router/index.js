@@ -1,8 +1,7 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
+import Vue from "vue";
+import VueRouter from "vue-router";
 
-
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
 // import Films from "@/views/Films/Index";
 // import NowPlaying from "@/views/Films/NowPlaying";
@@ -15,33 +14,30 @@ import filmsRouter from "./routes/films";
 import cinemasRouter from "./routes/cinemas";
 import centerRouter from "./routes/center";
 
-
 const routes = [
-  {path:"/",redirect: "/films/NowPlaying"},
+  { path: "/", redirect: "/films/NowPlaying" },
   ...filmsRouter,
   cinemasRouter,
-  centerRouter
+  centerRouter,
 
-
-//   {path:"/films",component:Films,
-//     children:[
-//       {path:"nowPlaying",component:NowPlaying},
-//       {path:"comingSoon",component:ComingSoon}
-//     ]
-// },
+  //   {path:"/films",component:Films,
+  //     children:[
+  //       {path:"nowPlaying",component:NowPlaying},
+  //       {path:"comingSoon",component:ComingSoon}
+  //     ]
+  // },
   //电影详情
   // {path:"/film/:filmId",component:Detail},
   // 我的影院
   // {path:"/cinemas",component:Cinemas},
   // 我的中心
   // {path:"/center",component:Center},
- 
-]
+];
 
 const router = new VueRouter({
-  mode: 'history',
+  mode: "history",
   base: process.env.BASE_URL,
-  routes
-})
+  routes,
+});
 
-export default router
+export default router;

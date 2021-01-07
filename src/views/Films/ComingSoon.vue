@@ -1,8 +1,14 @@
 <template>
-    <div>
-        <div class="Loading" v-show="isLoading">
-            <van-loading type="spinner" size="24px">加载中...</van-loading>
-        </div>
+    <div class="herder">
+        <van-list
+            v-model="loading"
+            :finished="finished"
+            finished-text="我也是有底线的 铁子!!!"
+            @load="onLoad"
+        >
+            <!-- <div class="Loading" v-show="isLoading">
+                <van-loading type="spinner" size="24px">加载中...</van-loading>
+            </div> -->
         <van-card v-for="item in list " :key="item.filmsId">
             <!-- 电影名称 -->
                 <template #title>
@@ -11,42 +17,57 @@
                     </div>
                 </template>
             <!-- 图片 -->
-            <template #thumb><img :src="item.poster" width="66px" height="90px"></template>
-            <template #desc class="line-height">
-                <div>主演: {{item.actors | sub}}</div>
-                <div>类型:{{item.category}}</div>
-                <div>{{item.nation}} | {{ item.runtime}}</div>
-                <div class="nowPlayingFilm-buy">购票</div>
-            </template>
-        </van-card>
+                <template #thumb><img :src="item.poster" width="66px" height="90px"></template>
+                <template #desc class="line-height">
+                    <div>主演: {{item.actors | sub}}</div>
+                    <div>{{item.nation}} | {{ item.runtime}}</div>
+                    <div>上映日期: {{item.premiereAt | timeStamp}}</div>
+                    <div class="nowPlayingFilm-buy">预约</div>
 
+                </template>
+                <template ></template>
+        </van-card>
+        </van-list>
     </div>
 </template>
 <script>
 import Vue from 'vue';
-import { Loading , Card, Tag , Button} from 'vant';
+import { Loading , Card, Tag , Button , PullRefresh, List  } from 'vant';
 import uri from "@/config/uri";
+import moment from "moment";
 Vue.use(Loading);
 Vue.use(Card);
 Vue.use(Tag);
 Vue.use(Button);
-
+Vue.use(List);
 export default {
-    created () {
-        this.$http.get(uri.getComingSoon).then(ret => {
-            console.log(ret)
-            if(ret.status == 0){
-                this.list = ret.data.films
-            }else{
-                return "网络出错"
-            }
-            this.isLoading = false
-        })
-    },
+    
     data () {
         return {
-            isLoading:true,
-            list:[]
+            loading:false,
+            list:[],
+            finished: false,
+            pageNum:1,
+        }
+    },
+    methods:{
+        getdata(){
+                this.$http.get(uri.getComingSoon + "?pageNum=" + this.pageNum).then(ret => {
+                    if(ret.status == 0){
+                        if(this.pageNum <= Math.ceil(ret.data.total/10)){
+                            this.list = [...this.list ,...ret.data.films ]
+                            this.pageNum++
+                        }else{
+                            this.finished = true
+                        }
+                    }else{
+                        return "网络出错"
+                    }
+                    this.loading = false
+              })
+        },
+        onLoad(){
+            this.getdata()
         }
     },
     filters:{
@@ -60,10 +81,15 @@ export default {
             }else{
                 return "暂无主演"
             }
-
+        },
+        timeStamp(timeStamp){
+            const arr = ["周日","周一","周二","周三","周四","周五","周六"]
+            const week = arr[moment(timeStamp * 1000).format("d")]//周
+            const day = moment(timeStamp * 1000).format("D")//天
+            const month = moment(timeStamp * 1000).format("M")//月
+            return `${week} ${month} 月 ${day} 日 `
         }
     }
-    
 }
 </script>
 <style lang="scss" scoped>
@@ -78,10 +104,6 @@ export default {
         line-height: 14px;
         padding: 0 2px;
         border-radius: 2px;
-    }
-    .grade{
-        color: #ffb232;
-        font-size: 14px;
     }
     .name{
         max-width: calc(100% - 25px);
@@ -103,17 +125,17 @@ export default {
         height: 25px;
         width: 50px;
         color: #ff5f16;
-        font-size: 12px;
+        font-size: 13px;
         text-align: center;
-        position: relative;
-        left:235px;
-        top:-30px;
-        border: 1px solid #ff5f16;
-        border-radius: 4px;
-    }
-    .line-height{
-        padding-top: 50px;
+        border-radius: 2px;
+        float: right;
+        border: 1px solid  #ff5f16;
+        margin-top:-40px ;
         
     }
-
+    .herder{
+        // padding-top: 44px;
+        margin-bottom: 50px;
+    }
+   
 </style>
